@@ -1,0 +1,102 @@
+.xt-100width {
+  width: 100%;
+}
+
+.xt-100height {
+  width: 100%;
+}
+
+.xt-100vwidth {
+  width: 100vw;
+}
+
+.xt-100vheight {
+  width: 100vh;
+}
+
+.xt-relative {
+  position: relative;
+}
+
+.xt-absolute {
+  position: absolute;
+}
+
+.xt-vflex {
+  display: flex;
+  flex-direction: column;
+}
+
+.xt-flex {
+  display: flex;
+}
+
+.xt-flex-wrap {
+  flex-wrap: wrap;
+}
+
+.xt-flex-just-center {
+  justify-content: center;
+}
+
+.xt-flex-just-between {
+  justify-content: space-between;
+}
+
+.xt-flex-just-around {
+  justify-content: space-around;
+}
+
+.xt-flex-just-end {
+  justify-content: flex-end;
+}
+
+.xt-flex-just-start {
+  justify-content: flex-start;
+}
+
+.xt-flex-align-center {
+  align-items: center;
+}
+
+.xt-flex-align-end {
+  align-items: flex-end;
+}
+
+.xt-flex-center {
+  justify-content: center;
+  align-items: center;
+}
+
+.xt-flex-center2 {
+  justify-content: space-around;
+  align-items: center;
+}
+
+.xt-talign-center {
+  text-align: center;
+}
+
+.xt-talign-left {
+  text-align: left;
+}
+
+.xt-talign-right {
+  text-align: right;
+}
+
+.xt-float-left {
+  float: left;
+}
+
+.xt-float-right {
+  float: right;
+}
+
+.xt-hover-pointer:hover {
+  cursor: pointer;
+}
+
+.xt-hmargin-center {
+  margin: 0 auto;
+}
