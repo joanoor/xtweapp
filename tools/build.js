@@ -18,12 +18,21 @@ const wxssConfig = config.wxss || {}
 const srcPath = config.srcPath
 const distPath = config.distPath
 const glob = require('glob')
+const typescript = require('gulp-typescript')
+const tsProject = typescript.createProject('tsconfig.json', { noImplicitAny: true });
 
 /* 拷贝文件 */
-const copy = (copyFileList) => {
-  if (!copyFileList.length) return false
-  return src(copyFileList, { cwd: srcPath, base: srcPath })
+const copy = (fileList) => {
+  if (!fileList.length) return false
+  return src(fileList, { cwd: srcPath, base: srcPath })
     .pipe(_.logger())
+    .pipe(dest(distPath))
+}
+
+const tsCompiler = (fileList) => {
+  if (!fileList.length) return false
+  return src(fileList, { cwd: srcPath, base: srcPath })
+    .pipe(tsProject())
     .pipe(dest(distPath))
 }
 
@@ -51,7 +60,6 @@ const buildStyle = (ext) => {
         return wxss(fileList)
       }
     }
-
     return done()
   }
 }
@@ -59,13 +67,26 @@ const buildStyle = (ext) => {
 /* 编译脚本 */
 const buildScript = (ext) => {
   return function (done) {
-    const fileList = getEntry(ext)
-    let tmpLength = Object.keys(fileList)
-    if (fileList && tmpLength.length) {
+    let fileList = null, tmpLength = null
+    if (ext === 'js') {
+      fileList = getEntry(ext, false) // false产生数组，true产生映射
+    } else {
+      fileList = getEntry(ext, false)
+    }
+    if (!Array.isArray(fileList)) {
+      tmpLength = Object.keys(fileList)
+      if (fileList && tmpLength.length) {
+        if (ext === 'js') {
+          js(fileList, this)
+        } else if (ext === 'ts') {
+          ts(fileList, this)
+        }
+      }
+    } else if (Array.isArray(fileList) && fileList.length) {
       if (ext === 'js') {
-        js(fileList, this)
-      } else if (ext === 'ts') {
-        ts(fileList, this)
+        return copy(fileList)
+      } else {
+        return tsCompiler(fileList)
       }
     }
     return done()
@@ -137,7 +158,6 @@ const buildLess = (lessFileList) => {
 
 
 /* 获取 scss 流 */
-
 const buildScss = (scssFileList) => {
   if (!scssFileList.length) return false
   return src(scssFileList, { cwd: srcPath, base: srcPath })
@@ -188,10 +208,9 @@ const js = (jsFileMap, scope) => {
       console.log(err)
     }
   }
-
   webpackConfig.entry = jsFileMap
   webpackConfig.output.path = distPath
-
+  console.log('======jsfilemap', jsFileMap)
   if (scope.webpackWatcher) {
     scope.webpackWatcher.close()
     scope.webpackWatcher = null
@@ -231,6 +250,7 @@ const ts = (tsFileMap, scope) => {
 
   webpackConfig.entry = tsFileMap
   webpackConfig.output.path = distPath
+  // console.log('=======log tsFileMap', tsFileMap, distPath)
   if (scope.webpackWatcherTS) {
     scope.webpackWatcherTS.close()
     scope.webpackWatcherTS = null
@@ -244,8 +264,6 @@ const ts = (tsFileMap, scope) => {
     webpack(webpackConfig).run(webpackCallback)
   }
 }
-
-
 
 /* 安装依赖包 */
 const install = () => {
@@ -348,6 +366,7 @@ class BuildTask {
 
     /* 监听安装包列表变化 */
     task(`${id}-watch-install`, () => watch(path.resolve(__dirname, '../package.json'), install()))
+
     /* 构建相关任务 */
     task(`${id}-build`, series(`${id}-clean-dist`, parallel(`${id}-component-wxml`, `${id}-component-wxs`, `${id}-component-wxss`, `${id}-component-less`, `${id}-component-scss`, `${id}-component-js`, `${id}-component-ts`, `${id}-component-json`)))
 

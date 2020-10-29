@@ -1,10 +1,6 @@
 const path = require('path')
-
-// eslint-disable-next-line import/no-extraneous-dependencies
 const webpack = require('webpack')
-// eslint-disable-next-line import/no-extraneous-dependencies
 const nodeExternals = require('webpack-node-externals')
-
 const isDev = process.argv.indexOf('--develop') >= 0
 const isWatch = process.argv.indexOf('--watch') >= 0
 const demoSrc = path.resolve(__dirname, './demo')
@@ -14,35 +10,13 @@ const baseCssPath = path.resolve(__dirname, '../src/common/main.wxss');
 const dev = path.join(demoDist, 'components')
 const dist = path.resolve(__dirname, '../miniprogram_dist')
 
-
-const glob = require('glob')
-
-const getEntry = () => {
-  const globPath = 'src/**/*.js' // 匹配src目录下的所有文件夹中的html文件
-  // (\/|\\\\) 这种写法是为了兼容 windows和 mac系统目录路径的不同写法
-  const pathDir = 'src(\/|\\\\)' // 路径为src目录下的所有文件夹
-  const files = glob.sync(globPath)
-  const entries = []
-  const reg = new RegExp('^' + pathDir)
-  for (let i = 0; i < files.length; i++) {
-    entries.push(files[i].replace(reg, '$`').replace('.js', ''))
-  }
-  return entries
-}
-
 module.exports = {
-  // entry: ['index', 'lib'],
-  // entry: ['vertification/vertification', 'sms/sms'],
-  entry: getEntry(),
-
   isDev,
   isWatch,
   srcPath: src, // 源目录
   distPath: isDev ? dev : dist, // 目标目录
-
   demoSrc, // demo 源目录
   demoDist, // demo 目标目录
-
   baseCssPath,
 
   wxss: {
@@ -59,7 +33,7 @@ module.exports = {
     mode: 'production',
     output: {
       filename: '[name].js',
-      libraryTarget: 'commonjs2',
+      // libraryTarget: 'commonjs2',
     },
     target: 'node',
     externals: [nodeExternals()], // 忽略 node_modules
@@ -67,7 +41,7 @@ module.exports = {
       rules: [{
         test: /\.js|\.ts$/i,
         use: [
-          'babel-loader',
+          'babel-loader'
         ],
         exclude: /node_modules/
       }],
