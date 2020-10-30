@@ -20,6 +20,7 @@ module.exports = {
   baseCssPath,
 
   wxss: {
+    less: false, // 使用 less 来编写 wxss
     scss: true, // 使用 scss 来编写 wxss
     sourcemap: false, // 生成 scss sourcemap
   },

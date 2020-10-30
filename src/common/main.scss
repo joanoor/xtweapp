@@ -59,18 +59,12 @@
   align-items: center;
 }
 
+.xt-flex-align-start {
+  align-items: flex-start;
+}
+
 .xt-flex-align-end {
   align-items: flex-end;
-}
-
-.xt-flex-center {
-  justify-content: center;
-  align-items: center;
-}
-
-.xt-flex-center2 {
-  justify-content: space-around;
-  align-items: center;
 }
 
 .xt-talign-center {

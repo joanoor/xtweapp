@@ -29,6 +29,7 @@ const copy = (fileList) => {
     .pipe(dest(distPath))
 }
 
+/* 编译ts */
 const tsCompiler = (fileList) => {
   if (!fileList.length) return false
   return src(fileList, { cwd: srcPath, base: srcPath })
@@ -150,12 +151,25 @@ const buildLess = (lessFileList) => {
     .pipe(gulpif(wxssConfig.less, less({ paths: [srcPath], compress: true })))
     // .pipe(checkWxss.end()) // 结束处理 import
     .pipe(cleanCss())
+    .pipe(
+      insert.transform((contents, file) => {
+        if (!file.path.includes('src' + path.sep + 'common')) {
+          const relativePath = path
+            .relative(
+              path.normalize(`${file.path}${path.sep}..`),
+              config.baseCssPath
+            )
+            .replace(/\\/g, '/');
+          contents = `@import '${relativePath}';${contents}`;
+        }
+        return contents;
+      })
+    )
     .pipe(rename({ extname: '.wxss' }))
     .pipe(gulpif(wxssConfig.less && wxssConfig.sourcemap, sourcemaps.write('./')))
     .pipe(_.logger(wxssConfig.less ? 'generate' : undefined))
     .pipe(dest(distPath))
 }
-
 
 /* 获取 scss 流 */
 const buildScss = (scssFileList) => {
@@ -337,12 +351,16 @@ class BuildTask {
     task(`${id}-component-ts`, buildScript('ts'))
     /* 监听 js 变化 */
     task(`${id}-watch-js`, watchFunc('js', id, false))
+    /* 监听 ts 变化 */
+    task(`${id}-watch-ts`, watchFunc('ts', id, false))
     /* 监听 json 变化 */
     task(`${id}-watch-json`, watchFunc('json', id))
     /* 监听 wxml 变化 */
     task(`${id}-watch-wxml`, watchFunc('wxml', id))
     /* 监听 wxss 变化 */
     task(`${id}-watch-wxss`, watchFunc('wxss', id))
+    /* 监听 less 变化 */
+    task(`${id}-watch-less`, watchFunc('less', id))
     /* 监听 scss 变化 */
     task(`${id}-watch-scss`, watchFunc('scss', id))
     /* 监听 demo 变化 */
@@ -370,7 +388,7 @@ class BuildTask {
     /* 构建相关任务 */
     task(`${id}-build`, series(`${id}-clean-dist`, parallel(`${id}-component-wxml`, `${id}-component-wxs`, `${id}-component-wxss`, `${id}-component-less`, `${id}-component-scss`, `${id}-component-js`, `${id}-component-ts`, `${id}-component-json`)))
 
-    task(`${id}-watch`, series(`${id}-build`, `${id}-demo`, `${id}-install`, parallel(`${id}-watch-wxml`, `${id}-component-wxs`, `${id}-watch-wxss`, `${id}-watch-scss`, `${id}-component-less`, `${id}-component-scss`, `${id}-watch-js`, `${id}-component-ts`, `${id}-watch-json`, `${id}-watch-install`, `${id}-watch-demo`)))
+    task(`${id}-watch`, series(`${id}-build`, `${id}-demo`, `${id}-install`, parallel(`${id}-watch-wxml`, `${id}-watch-wxss`, `${id}-watch-less`, `${id}-watch-scss`, `${id}-watch-js`, `${id}-watch-ts`, `${id}-watch-json`, `${id}-watch-install`, `${id}-watch-demo`)))
 
     task(`${id}-dev`, series(`${id}-build`, `${id}-demo`, `${id}-install`))
 
@@ -379,5 +397,3 @@ class BuildTask {
 }
 
 module.exports = BuildTask
-
-
