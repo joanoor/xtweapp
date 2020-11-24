@@ -1,35 +1,35 @@
-# miniprogram-custom-component
+# @joanoor/weapp
 
-小程序第三方组件库开发：
+本项目依照官方提供的实例，修改完成：
 
-* 支持使用 scss或者less（可直接使用，已经配置好） 语法编写 wxss 文件
-* 支持自定义组件单元测试
+* 支持使用 scss或者less（可直接使用，已经配置好），或者可以直接使用wxss来写样式
+* 支持自定义组件单元测试（需要配置）
 * 支持 eslint
 * 支持多入口构建
 
-## 使用
+## 使用方法：
 
-* 直接从 github 上 clone 下来
+直接从 [github](https://github.com/joanor/xtweapp.git) 上 clone 下来，开始使用依如下开发步骤执行。
 
-## 开发
+## 开发步骤：
 
 1. 安装依赖：
 
 ```
-npm install
+$ npm install
 ```
 2. 执行命令：
 
 ```
-npm run dev
+$ npm run dev
 ```
 默认会在包根目录下生成 miniprogram\_dev 目录，src 中的源代码会被构建并生成到 miniprogram\_dev/components 目录下。如果需要监听文件变化动态构建，则可以执行命令：
 
 ```
-npm run watch
+$ npm run watch
 ```
 
-> ps: 如果 minirpogram\_dev 目录下已存在小程序 demo，执行`npm run dev`则不会再将 tools 下的 demo 拷贝到此目录下。而执行`npm run watch`则会监听 tools 目录下的 demo 变动并进行拷贝。
+> 注意：如果 minirpogram\_dev 目录下已存在小程序 demo，执行 `npm run dev` 则不会再将 tools 下的 demo 拷贝到此目录下。而执行 `npm run watch` 则会监听 tools 目录下的 demo 变动并进行拷贝。
 
 3. 生成的 miniprogram\_dev 目录是一个小程序项目目录，以此目录作为小程序项目目录在开发者工具中打开即可查看自定义组件被使用的效果。
 
@@ -37,12 +37,10 @@ npm run watch
 
 * 如果有额外的构建需求，可自行修改 tools 目录中的构建脚本。
 * 内置支持 webpack、less 语法、sourcemap 等功能，默认关闭。如若需要可以自行修改 tools/config.js 配置文件中相关配置。
-* 内置支持多入口构建，如若需要可自行调整 tools/config.js 配置文件的 entry 字段。
 * 默认开启 eslint，可自行调整规则或在 tools/config.js 中注释掉 eslint-loader 行来关闭此功能。
-
 ## 发布
 
-> ps: 发布前得确保已经执行构建，小程序 npm 包只有构建出来的目录是真正被使用到的。
+> 注意：发布前得确保已经执行构建，小程序 npm 包只有构建出来的目录是真正被使用到的。
 
 1. 如果还没有 npm 帐号，可以到[ npm 官网](https://www.npmjs.com/)注册一个 npm 帐号。
 2. 在本地登录 npm 帐号，在本地执行：
@@ -61,7 +59,7 @@ npm publish
 ```
 到此，npm 包就成功发布到 npm 平台了。
 
-> PS：一些开发者在开发过程中可能修改过 npm 的源，所以当进行登录或发布时需要注意要将源切回 npm 的源。
+> 注意：一些开发者在开发过程中可能修改过 npm 的源，所以当进行登录或发布时需要注意要将源切回 npm 的源。
 
 ## 目录结构
 
@@ -111,13 +109,13 @@ npm run coverage
 ## 其他命令
 
 * 清空 miniprogram_dist 目录：
-
 ```
 npm run clean
 ```
-
 * 清空 miniprogam_dev 目录：
-
 ```
 npm run clean-dev
 ```
+
+
+> 注意：git上clone下来，安装依赖之后，可以直接npm run watch进行开发，这里将gulp中官方注册的install()任务取消了，（如不取消，会使demo中的package.json发生改变）
