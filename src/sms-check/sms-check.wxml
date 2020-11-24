@@ -1,0 +1,40 @@
+<view class="container">
+  <view class="container-header"></view>
+  <view class="shortmessage-body" wx:if="{{flag}}">
+    <view class="shortmessage-body-title">短信登录</view>
+    <view class="shortmessage-body-phonenumber">
+      <view class="shortmessage-body-phonenumber-prefix">+86</view>
+      <view class="shortmessage-body-phonenumber-main">
+        <input value="{{value}}" placeholder="请输入手机号码" class="shortmessage-body-phonenumber-input" bindfocus="showX" bindinput="getValue"></input>
+      </view>
+      <text class="" selectable="false" space="false" decode="false"></text>
+      <!-- <van-icon name="close" size="16px" color="#343434" bindclick="clearPhoneNumber" wx-if="{{isShowX}}" /> -->
+    </view>
+    <view class="main-container-footer-button">
+      <button loading="{{isloading}}" type="primary" block round color="#FC9209" custom-class="button-style-diy" bindtap="sendVerificationCode">
+        获取验证码
+      </button>
+    </view>
+  </view>
+  <view class="shortmessage-body" wx:if="{{!flag}}">
+    <view class="shortmessage-body-title">输入验证码</view>
+    <view class="shortmessage-body-attached">{{computeMessage}}</view>
+    <form bindsubmit="formSubmit">
+      <view class='content'>
+        <block wx:for="{{Length}}" wx:key="item">
+          <input class='iptbox' value="{{Value.length>=index+1?Value[index]:''}}" disabled password='{{ispassword}}' catchtap='Tap'></input>
+        </block>
+      </view>
+      <input name="password" password="{{true}}" class='ipt' maxlength="{{Length}}" focus="{{isFocus}}" bindinput="Focus"></input>
+      <view>
+        <view class="shortmessage-body-bottom">
+          {{capthcaText}}
+          <text wx:if="{{capthcaText==='没有收到？'}}" data-source="{{2}}" style="color:#FC9209" bindtap="sendVerificationCode">
+            重发短信
+          </text>
+        </view>
+        <!-- <button class="btn-area" formType="submit">Submit</button> -->
+      </view>
+    </form>
+  </view>
+</view>

@@ -1,5 +1,14 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-console */
+/* eslint-disable no-useless-escape */
+/* eslint-disable space-before-function-paren */
+/* eslint-disable no-use-before-define */
+/* eslint-disable object-curly-spacing */
+/* eslint-disable import/no-extraneous-dependencies */
 const path = require('path')
-const { src, dest, task, watch, series, parallel } = require('gulp')
+const {
+  src, dest, task, watch, series, parallel
+} = require('gulp')
 const clean = require('gulp-clean')
 const less = require('gulp-less')
 const sass = require('gulp-sass')
@@ -7,19 +16,22 @@ sass.compiler = require('node-sass')
 const cleanCss = require('gulp-clean-css')
 const rename = require('gulp-rename')
 const gulpif = require('gulp-if')
-const insert = require('gulp-insert');
+const insert = require('gulp-insert')
 const sourcemaps = require('gulp-sourcemaps')
 const webpack = require('webpack')
 const gulpInstall = require('gulp-install')
+const typescript = require('gulp-typescript')
+const glob = require('glob')
 const config = require('./config')
 const checkWxss = require('./checkwxss')
 const _ = require('./utils')
+
 const wxssConfig = config.wxss || {}
 const srcPath = config.srcPath
 const distPath = config.distPath
-const glob = require('glob')
-const typescript = require('gulp-typescript')
-const tsProject = typescript.createProject('tsconfig.json', { noImplicitAny: true });
+
+
+const tsProject = typescript.createProject('tsconfig.json', { noImplicitAny: true })
 
 /* 拷贝文件 */
 const copy = (fileList) => {
@@ -38,69 +50,62 @@ const tsCompiler = (fileList) => {
 }
 
 /* 直接复制 */
-const directCopy = (ext) => {
-  return function (done) {
-    const fileList = getEntry(ext)
-    if (fileList && fileList.length) {
-      return copy(fileList)
-    }
-    return done()
+const directCopy = (ext) => function (done) {
+  const fileList = getEntry(ext)
+  if (fileList && fileList.length) {
+    return copy(fileList)
   }
+  return done()
 }
 
 /* 编译样式 */
-const buildStyle = (ext) => {
-  return function (done) {
-    const fileList = getEntry(ext)
-    if (fileList && fileList.length) {
-      if (ext === 'scss') {
-        return buildScss(fileList)
-      } else if (ext === 'less') {
-        return buildLess(fileList)
-      } else if (ext === 'wxss') {
-        return wxss(fileList)
-      }
+const buildStyle = (ext) => function (done) {
+  const fileList = getEntry(ext)
+  if (fileList && fileList.length) {
+    if (ext === 'scss') {
+      return buildScss(fileList)
+    } else if (ext === 'less') {
+      return buildLess(fileList)
+    } else if (ext === 'wxss') {
+      return wxss(fileList)
     }
-    return done()
   }
+  return done()
 }
 
 /* 编译脚本 */
-const buildScript = (ext) => {
-  return function (done) {
-    let fileList = null, tmpLength = null
-    if (ext === 'js') {
-      fileList = getEntry(ext, false) // false产生数组，true产生映射
-    } else {
-      fileList = getEntry(ext, false)
-    }
-    if (!Array.isArray(fileList)) {
-      tmpLength = Object.keys(fileList)
-      if (fileList && tmpLength.length) {
-        if (ext === 'js') {
-          js(fileList, this)
-        } else if (ext === 'ts') {
-          ts(fileList, this)
-        }
-      }
-    } else if (Array.isArray(fileList) && fileList.length) {
-      if (ext === 'js') {
-        return copy(fileList)
-      } else {
-        return tsCompiler(fileList)
-      }
-    }
-    return done()
+const buildScript = (ext) => function (done) {
+  let fileList = null; let
+    tmpLength = null
+  if (ext === 'js') {
+    fileList = getEntry(ext, false) // false产生数组，true产生映射
+  } else {
+    fileList = getEntry(ext, false)
   }
+  if (!Array.isArray(fileList)) {
+    tmpLength = Object.keys(fileList)
+    if (fileList && tmpLength.length) {
+      if (ext === 'js') {
+        js(fileList, this)
+      } else if (ext === 'ts') {
+        ts(fileList, this)
+      }
+    }
+  } else if (Array.isArray(fileList) && fileList.length) {
+    if (ext === 'js') {
+      return copy(fileList)
+    } else {
+      return tsCompiler(fileList)
+    }
+  }
+  return done()
 }
 
-const watchFunc = (ext, id, flag) => {
-  return function () {
-    return watch(getEntry(ext, flag), {
-      cwd: srcPath,
-      base: srcPath
-    }, series(`${id}-component-${ext}`))
-  }
+const watchFunc = (ext, id, flag) => function () {
+  return watch(getEntry(ext, flag), {
+    cwd: srcPath,
+    base: srcPath
+  }, series(`${id}-component-${ext}`))
 }
 
 /* 获取资源 */
@@ -121,7 +126,6 @@ const getEntry = (ext, flag = true) => {
     } else {
       entries.push(path.join(files[i].replace(reg, '$`')))
     }
-
   }
   return entries
 }
@@ -154,15 +158,17 @@ const buildLess = (lessFileList) => {
     .pipe(
       insert.transform((contents, file) => {
         if (!file.path.includes('src' + path.sep + 'common')) {
-          const relativePath = path
-            .relative(
-              path.normalize(`${file.path}${path.sep}..`),
-              config.baseCssPath
-            )
-            .replace(/\\/g, '/');
-          contents = `@import '${relativePath}';${contents}`;
+          for (let i = 0; i < config.baseCssPath.length; ++i) {
+            const relativePath = path
+              .relative(
+                path.normalize(`${file.path}${path.sep}..`),
+                config.baseCssPath[i]
+              )
+              .replace(/\\/g, '/')
+            contents = `@import '${relativePath}';${contents}`
+          }
         }
-        return contents;
+        return contents
       })
     )
     .pipe(rename({ extname: '.wxss' }))
@@ -183,15 +189,17 @@ const buildScss = (scssFileList) => {
     .pipe(
       insert.transform((contents, file) => {
         if (!file.path.includes('src' + path.sep + 'common')) {
-          const relativePath = path
-            .relative(
-              path.normalize(`${file.path}${path.sep}..`),
-              config.baseCssPath
-            )
-            .replace(/\\/g, '/');
-          contents = `@import '${relativePath}';${contents}`;
+          for (let i = 0; i < config.baseCssPath.length; ++i) {
+            const relativePath = path
+              .relative(
+                path.normalize(`${file.path}${path.sep}..`),
+                config.baseCssPath[i]
+              )
+              .replace(/\\/g, '/')
+            contents = `@import '${relativePath}';${contents}`
+          }
         }
-        return contents;
+        return contents
       })
     )
     .pipe(rename({ extname: '.wxss' }))
@@ -224,7 +232,6 @@ const js = (jsFileMap, scope) => {
   }
   webpackConfig.entry = jsFileMap
   webpackConfig.output.path = distPath
-  console.log('======jsfilemap', jsFileMap)
   if (scope.webpackWatcher) {
     scope.webpackWatcher.close()
     scope.webpackWatcher = null
@@ -264,7 +271,6 @@ const ts = (tsFileMap, scope) => {
 
   webpackConfig.entry = tsFileMap
   webpackConfig.output.path = distPath
-  // console.log('=======log tsFileMap', tsFileMap, distPath)
   if (scope.webpackWatcherTS) {
     scope.webpackWatcherTS.close()
     scope.webpackWatcherTS = null
@@ -280,26 +286,24 @@ const ts = (tsFileMap, scope) => {
 }
 
 /* 安装依赖包 */
-const install = () => {
-  return series(async () => {
-    const demoDist = config.demoDist
-    const demoPackageJsonPath = path.join(demoDist, 'package.json')
-    const packageJson = _.readJson(path.resolve(__dirname, '../package.json'))
-    const dependencies = packageJson.dependencies || {}
+const install = () => series(async () => {
+  const demoDist = config.demoDist
+  const demoPackageJsonPath = path.join(demoDist, 'package.json')
+  const packageJson = _.readJson(path.resolve(__dirname, '../package.json'))
+  const dependencies = packageJson.dependencies || {}
 
-    await _.writeFile(demoPackageJsonPath, JSON.stringify({
-      dependencies
-    }, null, '\t')) // write dev demo's package.json
-  }, () => {
-    const demoDist = config.demoDist
-    const demoPackageJsonPath = path.join(demoDist, 'package.json')
+  await _.writeFile(demoPackageJsonPath, JSON.stringify({
+    dependencies
+  }, null, '\t')) // write dev demo's package.json
+}, () => {
+  const demoDist = config.demoDist
+  const demoPackageJsonPath = path.join(demoDist, 'package.json')
 
-    return src(demoPackageJsonPath)
-      .pipe(gulpInstall({
-        production: true
-      }))
-  })
-}
+  return src(demoPackageJsonPath)
+    .pipe(gulpInstall({
+      production: true
+    }))
+})
 
 class BuildTask {
   constructor(id) {
@@ -314,31 +318,35 @@ class BuildTask {
       read: false,
       allowEmpty: true
     }).pipe(clean()))
-    /* 拷贝 demo 到目标目录 */
+
     let isDemoExists = false
     task(`${id}-demo`, series(async () => {
       const demoDist = config.demoDist
+
       isDemoExists = await _.checkFileExists(path.join(demoDist, 'project.config.json'))
     }, done => {
       if (!isDemoExists) {
         const demoSrc = config.demoSrc
         const demoDist = config.demoDist
-        return src('**/*', {
-          cwd: demoSrc,
-          base: demoSrc
-        })
+
+        return src('**/*', { cwd: demoSrc, base: demoSrc })
           .pipe(dest(demoDist))
       }
+
       return done()
     }))
+
+
     /* 安装依赖包 */
-    task(`${id}-install`, install())
+    // task(`${id}-install`, install())
     /* 拷贝 json 文件到目标目录 */
     task(`${id}-component-json`, directCopy('json'))
     /* 拷贝 wxml 文件到目标目录 */
     task(`${id}-component-wxml`, directCopy('wxml'))
     /* 拷贝 wxs 文件到目标目录 */
     task(`${id}-component-wxs`, directCopy('wxs'))
+    /* 生成 markdown 文件到目标目录 */
+    task(`${id}-component-md`, directCopy('md'))
     /* 生成 wxss 文件到目标目录 */
     task(`${id}-component-wxss`, buildStyle('wxss'))
     /* less 生成 wxss 文件到目标目录 */
@@ -367,16 +375,10 @@ class BuildTask {
     task(`${id}-watch-demo`, () => {
       const demoSrc = config.demoSrc
       const demoDist = config.demoDist
-      const watchCallback = filePath => src(filePath, {
-        cwd: demoSrc,
-        base: demoSrc
-      })
+      const watchCallback = filePath => src(filePath, { cwd: demoSrc, base: demoSrc })
         .pipe(dest(demoDist))
 
-      return watch('**/*', {
-        cwd: demoSrc,
-        base: demoSrc
-      })
+      return watch('**/*', { cwd: demoSrc, base: demoSrc })
         .on('change', watchCallback)
         .on('add', watchCallback)
         .on('unlink', watchCallback)
@@ -386,11 +388,13 @@ class BuildTask {
     task(`${id}-watch-install`, () => watch(path.resolve(__dirname, '../package.json'), install()))
 
     /* 构建相关任务 */
-    task(`${id}-build`, series(`${id}-clean-dist`, parallel(`${id}-component-wxml`, `${id}-component-wxs`, `${id}-component-wxss`, `${id}-component-less`, `${id}-component-scss`, `${id}-component-js`, `${id}-component-ts`, `${id}-component-json`)))
+    task(`${id}-build`, series(`${id}-clean-dist`, parallel(`${id}-component-wxml`, `${id}-component-wxs`, `${id}-component-wxss`, `${id}-component-md`, `${id}-component-less`, `${id}-component-scss`, `${id}-component-js`, `${id}-component-ts`, `${id}-component-json`)))
 
-    task(`${id}-watch`, series(`${id}-build`, `${id}-demo`, `${id}-install`, parallel(`${id}-watch-wxml`, `${id}-watch-wxss`, `${id}-watch-less`, `${id}-watch-scss`, `${id}-watch-js`, `${id}-watch-ts`, `${id}-watch-json`, `${id}-watch-install`, `${id}-watch-demo`)))
+    // task(`${id}-watch`, series(`${id}-build`, `${id}-demo`, `${id}-install`, parallel(`${id}-watch-wxml`, `${id}-watch-wxss`, `${id}-component-md`, `${id}-watch-less`, `${id}-watch-scss`, `${id}-watch-js`, `${id}-watch-ts`, `${id}-watch-json`, `${id}-watch-install`, `${id}-watch-demo`)))
+    task(`${id}-watch`, series(`${id}-build`, `${id}-demo`, parallel(`${id}-watch-wxml`, `${id}-watch-wxss`, `${id}-component-md`, `${id}-watch-less`, `${id}-watch-scss`, `${id}-watch-js`, `${id}-watch-ts`, `${id}-watch-json`, `${id}-watch-install`, `${id}-watch-demo`)))
 
-    task(`${id}-dev`, series(`${id}-build`, `${id}-demo`, `${id}-install`))
+    // task(`${id}-dev`, series(`${id}-build`, `${id}-demo`, `${id}-install`))
+    task(`${id}-dev`, series(`${id}-build`, `${id}-demo`))
 
     task(`${id}-default`, series(`${id}-build`))
   }

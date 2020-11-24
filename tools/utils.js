@@ -1,3 +1,5 @@
+/* eslint-disable space-before-function-paren */
+/* eslint-disable import/no-extraneous-dependencies */
 const fs = require('fs')
 const path = require('path')
 
@@ -8,7 +10,7 @@ const through = require('through2')
 /**
  * 异步函数封装
  */
-function wrap(func, scope) {
+function wrap (func, scope) {
   return function (...args) {
     if (args.length) {
       const temp = args.pop()
@@ -38,14 +40,14 @@ const writeFileSync = wrap(fs.writeFile)
 /**
  * 调整路径分隔符
  */
-function transformPath(filePath, sep = '/') {
+function transformPath (filePath, sep = '/') {
   return filePath.replace(/[\\/]/g, sep)
 }
 
 /**
  * 检查文件是否存在
  */
-async function checkFileExists(filePath) {
+async function checkFileExists (filePath) {
   try {
     await accessSync(filePath)
     return true
@@ -57,7 +59,7 @@ async function checkFileExists(filePath) {
 /**
  * 递归创建目录
  */
-async function recursiveMkdir(dirPath) {
+async function recursiveMkdir (dirPath) {
   const prevDirPath = path.dirname(dirPath)
   try {
     await accessSync(prevDirPath)
@@ -84,7 +86,7 @@ async function recursiveMkdir(dirPath) {
 /**
  * 读取 json
  */
-function readJson(filePath) {
+function readJson (filePath) {
   try {
     // eslint-disable-next-line import/no-dynamic-require
     const content = require(filePath)
@@ -98,7 +100,7 @@ function readJson(filePath) {
 /**
  * 读取文件
  */
-async function readFile(filePath) {
+async function readFile (filePath) {
   try {
     return await readFileSync(filePath, 'utf8')
   } catch (err) {
@@ -110,7 +112,7 @@ async function readFile(filePath) {
 /**
  * 写文件
  */
-async function writeFile(filePath, data) {
+async function writeFile (filePath, data) {
   try {
     await recursiveMkdir(path.dirname(filePath))
     return await writeFileSync(filePath, data, 'utf8')
@@ -123,7 +125,7 @@ async function writeFile(filePath, data) {
 /**
  * 时间格式化
  */
-function format(time, reg) {
+function format (time, reg) {
   const date = typeof time === 'string' ? new Date(time) : time
   const map = {}
   map.yyyy = date.getFullYear()
@@ -145,7 +147,7 @@ function format(time, reg) {
 /**
  * 日志插件
  */
-function logger(action = 'copy') {
+function logger (action = 'copy') {
   return through.obj(function (file, enc, cb) {
     const type = path.extname(file.path).slice(1).toLowerCase()
 
@@ -160,7 +162,7 @@ function logger(action = 'copy') {
 /**
  * 比较数组是否相等
  */
-function compareArray(arr1, arr2) {
+function compareArray (arr1, arr2) {
   if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false
   if (arr1.length !== arr2.length) return false
 
@@ -174,7 +176,7 @@ function compareArray(arr1, arr2) {
 /**
  * 合并两个对象
  */
-function merge(obj1, obj2) {
+function merge (obj1, obj2) {
   Object.keys(obj2).forEach(key => {
     if (Array.isArray(obj1[key]) && Array.isArray(obj2[key])) {
       obj1[key] = obj1[key].concat(obj2[key])
@@ -192,7 +194,7 @@ function merge(obj1, obj2) {
  * 获取 id
  */
 let seed = +new Date()
-function getId() {
+function getId () {
   return ++seed
 }
 

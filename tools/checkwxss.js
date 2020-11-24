@@ -1,3 +1,9 @@
+/* eslint-disable handle-callback-err */
+/* eslint-disable no-unused-vars */
+/* eslint-disable promise/no-callback-in-promise */
+/* eslint-disable object-curly-spacing */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable space-before-function-paren */
 const path = require('path')
 const through = require('through2')
 const Vinyl = require('vinyl')
@@ -67,7 +73,6 @@ module.exports = {
           this.push(file)
           cb()
         }).catch(err => {
-          console.warn(`deal with ${file.path} failed: ${err.stack}`)
           this.push(file)
           cb()
         })

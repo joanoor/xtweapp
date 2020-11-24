@@ -1,15 +1,14 @@
 # miniprogram-custom-component
 
-小程序自定义组件开发模板：
+小程序第三方组件库开发：
 
-* 支持使用 scss或者less（需配置） 语法编写 wxss 文件
+* 支持使用 scss或者less（可直接使用，已经配置好） 语法编写 wxss 文件
 * 支持自定义组件单元测试
 * 支持 eslint
 * 支持多入口构建
 
 ## 使用
 
-* 使用[命令行工具](https://github.com/wechat-miniprogram/miniprogram-cli)进行初始化
 * 直接从 github 上 clone 下来
 
 ## 开发
@@ -19,13 +18,11 @@
 ```
 npm install
 ```
-
 2. 执行命令：
 
 ```
 npm run dev
 ```
-
 默认会在包根目录下生成 miniprogram\_dev 目录，src 中的源代码会被构建并生成到 miniprogram\_dev/components 目录下。如果需要监听文件变化动态构建，则可以执行命令：
 
 ```
@@ -53,19 +50,15 @@ npm run watch
 ```
 npm adduser
 ```
-
 或者
 
 ```
 npm login
 ```
-
 3. 在已完成编写的 npm 包根目录下执行：
-
 ```
 npm publish
 ```
-
 到此，npm 包就成功发布到 npm 平台了。
 
 > PS：一些开发者在开发过程中可能修改过 npm 的源，所以当进行登录或发布时需要注意要将源切回 npm 的源。

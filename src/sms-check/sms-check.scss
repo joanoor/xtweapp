@@ -1,0 +1,83 @@
+.shortmessage-body-title {
+  font-size: 60rpx;
+  font-weight: 550;
+  text-align: center;
+  margin-bottom: 70rpx;
+
+}
+
+.shortmessage-body-phonenumber {
+  border-bottom: solid 1rpx #ddd;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 80rpx;
+  line-height: 80rpx;
+  padding: 15rpx 0;
+  font-size: 40rpx;
+}
+
+.shortmessage-body-phonenumber-prefix {
+  padding: 0 30rpx 0 50rpx;
+}
+
+.shortmessage-body-phonenumber-main {
+  width: 65%;
+}
+
+.shortmessage-body-phonenumber-input {
+  height: 80rpx;
+  width: 100%;
+  line-height: 80rpx;
+}
+
+.button-style-diy {
+  /* width: 640rpx !important; */
+  margin-top:80rpx;
+  width:92% !important;
+  height: 44rpx;
+  line-height: 44rpx;
+  font-size: 40rpx !important;
+  z-index: 100;
+}
+
+.shortmessage-body-attached{
+  text-align: center;
+  color:#999;
+}
+
+.shortmessage-body-bottom{
+  text-align: center;
+}
+
+.content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 95%;
+  margin: 100rpx auto;
+}
+
+.iptbox {
+  width: 75rpx;
+  height: 80rpx;
+
+  border-bottom: solid 2px black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.ipt {
+  width: 0;
+  height: 0;
+}
+
+.btn-area {
+  width: 80%;
+  background-color: orange;
+  color: white;
+}

@@ -1,8 +1,7 @@
 {
   "name": "@joanoor/weapp",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "",
-  "main": "miniprogram_dist/index.js",
   "scripts": {
     "dev": "gulp dev --develop",
     "watch": "gulp watch --develop --watch",
@@ -17,6 +16,9 @@
     "lint-tools": "eslint \"tools/**/*.js\" --rule \"import/no-extraneous-dependencies: false\" --fix"
   },
   "miniprogram": "miniprogram_dist",
+  "files": [
+    "miniprogram_dist"
+  ],
   "jest": {
     "testEnvironment": "jsdom",
     "testURL": "https://jest.test",
@@ -48,16 +50,19 @@
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^3.8.0",
+    "glob": "^7.1.6",
     "gulp": "^4.0.0",
     "gulp-clean": "^0.4.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-if": "^2.0.2",
+    "gulp-insert": "^0.5.0",
     "gulp-install": "^1.1.0",
     "gulp-less": "^4.0.1",
     "gulp-postcss": "^9.0.0",
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.1.0",
     "gulp-sourcemaps": "^2.6.5",
+    "gulp-typescript": "^6.0.0-alpha.1",
     "jest": "^23.5.0",
     "miniprogram-api-typings": "^2.10.3-1",
     "miniprogram-simulate": "^1.2.0",
@@ -71,10 +76,5 @@
     "webpack": "^4.29.5",
     "webpack-node-externals": "^1.7.2"
   },
-  "dependencies": {
-    "glob": "^7.1.6",
-    "gulp-insert": "^0.5.0",
-    "gulp-typescript": "^6.0.0-alpha.1",
-    "miniprogram-computed": "^2.1.1"
-  }
+  "dependencies": {}
 }

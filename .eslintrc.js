@@ -23,6 +23,7 @@ module.exports = {
     'promise'
   ],
   'rules': {
+    'prefer-const': 0,
     'arrow-parens': 'off',
     'comma-dangle': [
       'error',
