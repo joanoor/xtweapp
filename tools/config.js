@@ -7,7 +7,6 @@ const isDev = process.argv.indexOf('--develop') >= 0
 const isWatch = process.argv.indexOf('--watch') >= 0
 const demoSrc = path.resolve(__dirname, './demo')
 const demoDist = path.resolve(__dirname, '../miniprogram_dev')
-const demoSrcPackage = path.resolve(__dirname, './demo/package.json')
 const src = path.resolve(__dirname, '../src')
 const baseCssPath = [path.resolve(__dirname, '../src/common/main.wxss'), path.resolve(__dirname, '../src/common/iconfont.wxss'), path.resolve(__dirname, '../src/common/common.wxss')]
 const dev = path.join(demoDist, 'components')
@@ -20,7 +19,6 @@ module.exports = {
   distPath: isDev ? dev : dist, // 目标目录
   demoSrc, // demo 源目录
   demoDist, // demo 目标目录
-  demoSrcPackage,
   baseCssPath,
 
   wxss: {

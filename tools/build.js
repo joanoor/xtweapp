@@ -1,3 +1,5 @@
+/* eslint-disable complexity */
+/* eslint-disable max-len */
 /* eslint-disable consistent-return */
 /* eslint-disable no-console */
 /* eslint-disable no-useless-escape */
@@ -75,8 +77,8 @@ const buildStyle = (ext) => function (done) {
 
 /* 编译脚本 */
 const buildScript = (ext) => function (done) {
-  let fileList = null; let
-    tmpLength = null
+  let fileList = null
+  let tmpLength = null
   if (ext === 'js') {
     fileList = getEntry(ext, false) // false产生数组，true产生映射
   } else {
@@ -106,6 +108,9 @@ const watchFunc = (ext, id, flag) => function () {
     cwd: srcPath,
     base: srcPath
   }, series(`${id}-component-${ext}`))
+    .on('change', watchCallback)
+    .on('add', watchCallback)
+    .on('unlink', watchCallback)
 }
 
 /* 获取资源 */
@@ -371,6 +376,17 @@ class BuildTask {
     task(`${id}-watch-less`, watchFunc('less', id))
     /* 监听 scss 变化 */
     task(`${id}-watch-scss`, watchFunc('scss', id))
+
+    /* 监听 src 变化 */
+    task(`${id}-watch-src`, () => {
+      // const demoDist = config.demoDist
+      // const watchCallback = filePath => src(filePath, { cwd: srcPath, base: srcPath })
+      //   .pipe(dest(demoDist))
+
+      return watch('**/*', { cwd: srcPath, base: srcPath })
+        .on('add', series(`${id}-watch`))
+    })
+
     /* 监听 demo 变化 */
     task(`${id}-watch-demo`, () => {
       const demoSrc = config.demoSrc
@@ -385,13 +401,14 @@ class BuildTask {
     })
 
     /* 监听安装包列表变化 */
-    task(`${id}-watch-install`, () => watch(path.resolve(__dirname, '../package.json'), install()))
+    // task(`${id}-watch-install`, () => watch(path.resolve(__dirname, '../package.json'), install()))
 
     /* 构建相关任务 */
     task(`${id}-build`, series(`${id}-clean-dist`, parallel(`${id}-component-wxml`, `${id}-component-wxs`, `${id}-component-wxss`, `${id}-component-md`, `${id}-component-less`, `${id}-component-scss`, `${id}-component-js`, `${id}-component-ts`, `${id}-component-json`)))
 
     // task(`${id}-watch`, series(`${id}-build`, `${id}-demo`, `${id}-install`, parallel(`${id}-watch-wxml`, `${id}-watch-wxss`, `${id}-component-md`, `${id}-watch-less`, `${id}-watch-scss`, `${id}-watch-js`, `${id}-watch-ts`, `${id}-watch-json`, `${id}-watch-install`, `${id}-watch-demo`)))
-    task(`${id}-watch`, series(`${id}-build`, `${id}-demo`, parallel(`${id}-watch-wxml`, `${id}-watch-wxss`, `${id}-component-md`, `${id}-watch-less`, `${id}-watch-scss`, `${id}-watch-js`, `${id}-watch-ts`, `${id}-watch-json`, `${id}-watch-install`, `${id}-watch-demo`)))
+    task(`${id}-watch`, series(`${id}-build`, `${id}-demo`, `${id}-watch-src`, parallel(`${id}-watch-wxml`, `${id}-watch-wxss`, `${id}-component-md`, `${id}-watch-less`, `${id}-watch-scss`, `${id}-watch-js`, `${id}-watch-ts`, `${id}-watch-json`, `${id}-watch-demo`)))
+
 
     // task(`${id}-dev`, series(`${id}-build`, `${id}-demo`, `${id}-install`))
     task(`${id}-dev`, series(`${id}-build`, `${id}-demo`))

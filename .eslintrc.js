@@ -1,12 +1,12 @@
 module.exports = {
   'extends': [
-    'airbnb-base',
-    'plugin:promise/recommended'
+    // 'airbnb-base',
+    // 'plugin:promise/recommended'
   ],
   'parser': '@typescript-eslint/parser',
   'plugins': ['@typescript-eslint'],
   'parserOptions': {
-    'ecmaVersion': 9,
+    'ecmaVersion': 6,
     'ecmaFeatures': {
       'jsx': false
     },
@@ -23,6 +23,7 @@ module.exports = {
     'promise'
   ],
   'rules': {
+    "object-curly-spacing": 0,
     'prefer-const': 0,
     'arrow-parens': 'off',
     'comma-dangle': [
